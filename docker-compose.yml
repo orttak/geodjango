@@ -1,0 +1,30 @@
+version: '3'
+services:
+  postgis:
+    image: mdillon/postgis:10
+    container_name: postgis
+    env_file:
+      - ./postgis.env
+    ports:
+      - '5432:5432'
+    volumes:
+      - /home/akif/postgis_data:/var/lib/postgresql/data:Z
+    restart: on-failure
+    healthcheck:
+      test: "exit 0"
+  web:
+    image: geodjango
+    container_name: django_app
+    restart: always
+    command: python3 manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - /mnt/d/doktar_api/geodjango:/home
+      - /mnt/d:/mnt/d
+      - /mnt/c:/mnt/c
+    depends_on:
+      - postgis
+
+# docker-compose run web django-admin startproject AppName
+
